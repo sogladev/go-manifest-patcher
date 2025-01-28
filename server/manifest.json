@@ -2,18 +2,46 @@
   "Version": "1.0",
   "Files": [
     {
-      "Path": "files/.gitkeep",
-      "Hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "Size": 0,
+      "Path": "files/1MB_A.bin",
+      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
+      "Size": 1048576,
       "Custom": true,
-      "URL": "http://localhost:8080/files/.gitkeep"
+      "URL": "http://localhost:8080/files/1MB_A.bin"
     },
     {
-      "Path": "files/100MB.bin",
-      "Hash": "20492a4d0d84f8beb1767f6616229f85d44c2827b64bdbfb260ee12fa1109e0e",
-      "Size": 104857600,
+      "Path": "files/1MB_B.bin",
+      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
+      "Size": 1048576,
       "Custom": true,
-      "URL": "http://localhost:8080/files/100MB.bin"
+      "URL": "http://localhost:8080/files/1MB_B.bin"
+    },
+    {
+      "Path": "files/1MB_C.bin",
+      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
+      "Size": 1048576,
+      "Custom": true,
+      "URL": "http://localhost:8080/files/1MB_C.bin"
+    },
+    {
+      "Path": "files/1MB_D.bin",
+      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
+      "Size": 1048576,
+      "Custom": true,
+      "URL": "http://localhost:8080/files/1MB_D.bin"
+    },
+    {
+      "Path": "files/1MB_E.bin",
+      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
+      "Size": 1048576,
+      "Custom": true,
+      "URL": "http://localhost:8080/files/1MB_E.bin"
+    },
+    {
+      "Path": "files/1MB_F.bin",
+      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
+      "Size": 1048576,
+      "Custom": true,
+      "URL": "http://localhost:8080/files/1MB_F.bin"
     }
   ]
 }
