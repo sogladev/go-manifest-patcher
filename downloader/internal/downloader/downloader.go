@@ -23,6 +23,15 @@ type FileOperation struct {
 	Status  string
 }
 
+func findOperationIndex(operations []FileOperation, path string) int {
+	for i, op := range operations {
+		if op.Path == path {
+			return i
+		}
+	}
+	return -1
+}
+
 func ProcessManifest(m *manifest.Manifest) error {
 	filter := NewFilter()
 
@@ -90,22 +99,31 @@ func ProcessManifest(m *manifest.Manifest) error {
 	fmt.Println("\nManifest Overview:")
 	fmt.Printf(" %s\n", util.ColorGreen("Up-to-date files:"))
 	for _, file := range upToDate {
-		fmt.Printf("  %s\n", util.ColorGreen(file))
+		info, _ := os.Stat(file)
+		fmt.Printf("  %s (Size: %s)\n",
+			util.ColorGreen(file),
+			humanize.Bytes(uint64(info.Size())),
+		)
 	}
 
 	fmt.Printf("\n %s\n", util.ColorYellow("Outdated files (will be updated):"))
 	for _, file := range outdated {
-		fmt.Printf("  %s\n", util.ColorYellow(file))
+		info, _ := os.Stat(file)
+		newSize := operations[findOperationIndex(operations, file)].NewSize
+		fmt.Printf("  %s (Current Size: %s, New Size: %s)\n",
+			util.ColorYellow(file),
+			humanize.Bytes(uint64(info.Size())),
+			humanize.Bytes(uint64(newSize)),
+		)
 	}
 
 	fmt.Printf("\n %s\n", util.ColorRed("Missing files (will be downloaded):"))
 	for _, file := range missing {
-		fmt.Printf("  %s\n", util.ColorRed(file))
-	}
-
-	fmt.Printf("\n %s\n", util.ColorCyan("Extra files (not in manifest):"))
-	for file := range localFiles {
-		fmt.Printf("  %s\n", util.ColorCyan(file))
+		newSize := operations[findOperationIndex(operations, file)].NewSize
+		fmt.Printf("  %s (New Size: %s)\n",
+			util.ColorRed(file),
+			humanize.Bytes(uint64(newSize)),
+		)
 	}
 
 	// Display transaction summary
