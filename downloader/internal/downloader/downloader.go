@@ -30,9 +30,7 @@ func ProcessManifest(m *manifest.Manifest) error {
 	localFiles := map[string]bool{}
 	err := filepath.WalkDir(".", func(path string, d fs.DirEntry, err error) error {
 		if err == nil && !d.IsDir() {
-			// Get the base name of the file
-			base := filepath.Base(path)
-			if !filter.IsIgnored(base) {
+			if !filter.IsIgnored(path) {
 				localFiles[path] = true
 			}
 		}
