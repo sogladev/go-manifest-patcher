@@ -88,16 +88,15 @@ func (pw *progressWriter) Write(p []byte) (int, error) {
 	n, err := pw.Out.Write(p)
 	*pw.Downloaded += int64(n)
 	elapsed := time.Since(pw.StartTime)
-	mbDownloaded := float64(*pw.Downloaded) / (1024.0 * 1024.0)
-	speed := mbDownloaded / elapsed.Seconds()
-	fileSizeMB := float64(pw.Total) / (1024.0 * 1024.0)
+	speed := float64(*pw.Downloaded) / elapsed.Seconds()
+
 	util.PrintProgress(util.ProgressInfo{
 		Current:    int(*pw.Downloaded),
 		Total:      int(pw.Total),
 		FileIndex:  pw.FileIndex,
 		TotalFiles: pw.TotalFiles,
 		Speed:      speed,
-		FileSizeMB: fileSizeMB,
+		FileSize:   pw.Total,
 		Elapsed:    elapsed,
 		FileName:   pw.FileName,
 	})

@@ -3,6 +3,8 @@ package util
 import (
 	"fmt"
 	"time"
+
+	"github.com/dustin/go-humanize"
 )
 
 type ProgressInfo struct {
@@ -10,8 +12,8 @@ type ProgressInfo struct {
 	Total      int
 	FileIndex  int
 	TotalFiles int
-	Speed      float64
-	FileSizeMB float64
+	Speed      float64 // bytes per second
+	FileSize   int64   // total bytes
 	Elapsed    time.Duration
 	FileName   string
 }
@@ -19,7 +21,11 @@ type ProgressInfo struct {
 func PrintProgress(info ProgressInfo) {
 	percent := (float64(info.Current) / float64(info.Total)) * 100
 	fmt.Printf(
-		"\r[%d/%d] %s %.2f%% | %.2f MiB/s | %.2f MiB | elapsed %s",
-		info.FileIndex, info.TotalFiles, info.FileName, percent, info.Speed, info.FileSizeMB, info.Elapsed.String(),
+		"\r[%d/%d] %s %.2f%% | %s/s | %s | elapsed %s",
+		info.FileIndex, info.TotalFiles, info.FileName,
+		percent,
+		humanize.Bytes(uint64(info.Speed)),
+		humanize.Bytes(uint64(info.FileSize)),
+		info.Elapsed.Truncate(time.Second).String(),
 	)
 }
