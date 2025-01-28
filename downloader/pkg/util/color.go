@@ -2,9 +2,31 @@ package util
 
 // ANSI color codes
 const (
-	ColorReset  = "\033[0m"
-	ColorGreen  = "\033[32m"
-	ColorYellow = "\033[33m"
-	ColorRed    = "\033[31m"
-	ColorCyan   = "\033[36m"
+	Reset  = "\033[0m"
+	Green  = "\033[32m"
+	Yellow = "\033[33m"
+	Red    = "\033[31m"
+	Cyan   = "\033[36m"
 )
+
+// Colorize wraps the given text with the specified color code
+func Colorize(text, color string) string {
+	return color + text + Reset
+}
+
+// Color functions for convenience
+func ColorGreen(text string) string {
+	return Colorize(text, Green)
+}
+
+func ColorYellow(text string) string {
+	return Colorize(text, Yellow)
+}
+
+func ColorRed(text string) string {
+	return Colorize(text, Red)
+}
+
+func ColorCyan(text string) string {
+	return Colorize(text, Cyan)
+}

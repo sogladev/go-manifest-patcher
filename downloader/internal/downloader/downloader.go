@@ -90,24 +90,24 @@ func ProcessManifest(m *manifest.Manifest) error {
 
 	// Display categorized files
 	fmt.Println("\nManifest Overview:")
-	fmt.Printf("%sUp-to-date files:%s\n", util.ColorGreen, util.ColorReset)
+	fmt.Printf(" %s\n", util.ColorGreen("Up-to-date files:"))
 	for _, file := range upToDate {
-		fmt.Printf("%s  %s%s\n", util.ColorGreen, file, util.ColorReset)
+		fmt.Printf("  %s\n", util.ColorGreen(file))
 	}
 
-	fmt.Printf("\n%sOutdated files (will be updated):%s\n", util.ColorYellow, util.ColorReset)
+	fmt.Printf("\n %s\n", util.ColorYellow("Outdated files (will be updated):"))
 	for _, file := range outdated {
-		fmt.Printf("%s  %s%s\n", util.ColorYellow, file, util.ColorReset)
+		fmt.Printf("  %s\n", util.ColorYellow(file))
 	}
 
-	fmt.Printf("\n%sMissing files (will be downloaded):%s\n", util.ColorRed, util.ColorReset)
+	fmt.Printf("\n %s\n", util.ColorRed("Missing files (will be downloaded):"))
 	for _, file := range missing {
-		fmt.Printf("%s  %s%s\n", util.ColorRed, file, util.ColorReset)
+		fmt.Printf("  %s\n", util.ColorRed(file))
 	}
 
-	fmt.Printf("\n%sExtra files (not in manifest):%s\n", util.ColorCyan, util.ColorReset)
+	fmt.Printf("\n %s\n", util.ColorCyan("Extra files (not in manifest):"))
 	for file := range localFiles {
-		fmt.Printf("%s  %s%s\n", util.ColorCyan, file, util.ColorReset)
+		fmt.Printf("  %s\n", util.ColorCyan(file))
 	}
 
 	// Display transaction summary
