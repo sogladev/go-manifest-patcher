@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 func ProcessManifest(m *manifest.Manifest) error {
@@ -37,6 +38,12 @@ func downloadFile(url, filePath string) error {
 
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("failed to download file, status code: %d", resp.StatusCode)
+	}
+
+	// Create directories if they don't exist
+	dir := filepath.Dir(filePath)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return fmt.Errorf("failed to create directory %s: %v", dir, err)
 	}
 
 	out, err := os.Create(filePath)
