@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"io"
 	"log"
 	"net/http"
@@ -33,6 +34,10 @@ func (t *ThrottledReader) Seek(offset int64, whence int) (int64, error) {
 }
 
 func main() {
+	// Add command-line flag for input directory
+	interval := flag.Int("interval", 100, "ms delay per chunk")
+	flag.Parse()
+
 	// Custom handler to throttle file downloads
 	http.HandleFunc("/files/", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Throttling request for: %s\n", r.URL.Path)
@@ -49,8 +54,8 @@ func main() {
 		// Wrap the file in a ThrottledReader
 		throttledReader := &ThrottledReader{
 			reader:   file,
-			interval: 100 * time.Millisecond, // 1ms delay per chunk
-			chunk:    1024,                   // 1KB per chunk
+			interval: time.Duration(*interval) * time.Millisecond, // ms delay per chunk
+			chunk:    1024,                                        // 1KB per chunk
 		}
 
 		// Serve the content using the throttled reader
