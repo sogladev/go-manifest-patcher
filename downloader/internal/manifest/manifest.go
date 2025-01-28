@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 type PatchFile struct {
@@ -40,6 +41,11 @@ func DownloadManifest(url string) (*Manifest, error) {
 	err = json.Unmarshal(data, &manifest)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing manifest: %v", err)
+	}
+
+	// Convert Windows-style paths to cross-platform paths
+	for i := range manifest.Files {
+		manifest.Files[i].Path = strings.ReplaceAll(manifest.Files[i].Path, "\\", "/")
 	}
 
 	return &manifest, nil
