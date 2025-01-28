@@ -17,7 +17,6 @@ func NewFilter() *Filter {
 	return &Filter{
 		ExactMatches: map[string]struct{}{
 			"README.md": {},
-			"main.go":   {},
 			"go.sum":    {},
 			"go.mod":    {},
 			// Add more exact filenames as needed
@@ -32,6 +31,7 @@ func NewFilter() *Filter {
 			"temp/*",    // Ignore all files in temp directory
 			"*.tmp",     // Ignore all .tmp files
 			"*.bak",     // Ignore all .bak files
+			"*.go",      // Ignore all .go files
 			"docs/*.md", // Ignore markdown files in docs directory
 			// Add more glob patterns as needed
 		},

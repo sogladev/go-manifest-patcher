@@ -4,10 +4,13 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type PatchFile struct {
@@ -24,47 +27,61 @@ type Manifest struct {
 }
 
 func main() {
-	// Directory containing the files
-	filesDir := "files"
-	baseURL := "http://localhost:8080/" // Base URL for file download links
-
-	// Read all files in the directory
-	files, err := os.ReadDir(filesDir)
-	if err != nil {
-		fmt.Printf("Error reading directory: %v\n", err)
-		return
-	}
+	filesDir := flag.String("files", "files", "Directory containing the files to process")
+	baseURL := flag.String("url", "http://localhost:8080/", "Base URL for file download links")
+	version := flag.String("version", "1.0", "Manifest version")
+	flag.Parse()
 
 	var manifest Manifest
-	manifest.Version = "1.0"
+	manifest.Version = *version
 
-	for _, file := range files {
-		if file.IsDir() {
-			continue // Skip directories
+	// Walk through all files in the directory recursively
+	err := filepath.WalkDir(*filesDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
 		}
 
-		filePath := filepath.Join(filesDir, file.Name())
-		hash, err := calculateHash(filePath)
-		if err != nil {
-			fmt.Printf("Error calculating hash for %s: %v\n", file.Name(), err)
-			continue
+		if d.IsDir() {
+			return nil // Skip directories
 		}
 
-		fileInfo, err := os.Stat(filePath)
+		// Get path relative to working directory instead of files directory
+		relPath, err := filepath.Rel(".", path)
 		if err != nil {
-			fmt.Printf("Error getting file info for %s: %v\n", file.Name(), err)
-			continue
+			fmt.Printf("Error getting relative path for %s: %v\n", path, err)
+			return nil
+		}
+
+		// Replace Windows backslashes with forward slashes
+		relPath = strings.ReplaceAll(relPath, "\\", "/")
+
+		info, err := os.Stat(path)
+		if err != nil {
+			fmt.Printf("Error getting file info for %s: %v\n", path, err)
+			return nil
+		}
+
+		hash, err := calculateHash(path)
+		if err != nil {
+			fmt.Printf("Error calculating hash for %s: %v\n", path, err)
+			return nil
 		}
 
 		patchFile := PatchFile{
-			Path:   filePath,
+			Path:   relPath,
 			Hash:   hash,
-			Size:   fileInfo.Size(),
+			Size:   info.Size(),
 			Custom: true,
-			URL:    baseURL + filePath,
+			URL:    *baseURL + relPath,
 		}
 
 		manifest.Files = append(manifest.Files, patchFile)
+		return nil
+	})
+
+	if err != nil {
+		fmt.Printf("Error walking directory: %v\n", err)
+		return
 	}
 
 	// Write the manifest to a file

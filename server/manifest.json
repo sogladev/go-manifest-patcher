@@ -30,18 +30,18 @@
       "URL": "http://localhost:8080/files/1MB_D.bin"
     },
     {
-      "Path": "files/1MB_E.bin",
+      "Path": "files/more/1MB_E.bin",
       "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
       "Size": 1048576,
       "Custom": true,
-      "URL": "http://localhost:8080/files/1MB_E.bin"
+      "URL": "http://localhost:8080/files/more/1MB_E.bin"
     },
     {
-      "Path": "files/1MB_F.bin",
+      "Path": "files/more/1MB_F.bin",
       "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
       "Size": 1048576,
       "Custom": true,
-      "URL": "http://localhost:8080/files/1MB_F.bin"
+      "URL": "http://localhost:8080/files/more/1MB_F.bin"
     }
   ]
 }
