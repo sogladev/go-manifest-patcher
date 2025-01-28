@@ -6,6 +6,7 @@ import (
 	"downloader/internal/logger"
 	"downloader/internal/manifest"
 	"log"
+	"strings"
 )
 
 func main() {
@@ -28,5 +29,6 @@ func main() {
 		log.Fatalf("Failed to process manifest: %v", err)
 	}
 
-	log.Println("All files are up to date or successfully downloaded.")
+	println("\n" + strings.Repeat("-", 80))
+	println("All files are up to date or successfully downloaded.")
 }

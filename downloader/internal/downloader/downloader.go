@@ -97,6 +97,7 @@ func ProcessManifest(m *manifest.Manifest) error {
 
 	// Display categorized files
 	fmt.Println("\nManifest Overview:")
+	fmt.Printf(" Version: %s\n", m.Version)
 	fmt.Printf(" %s\n", util.ColorGreen("Up-to-date files:"))
 	for _, file := range upToDate {
 		info, _ := os.Stat(file)
@@ -161,7 +162,7 @@ func ProcessManifest(m *manifest.Manifest) error {
 				if err != nil {
 					return fmt.Errorf("error downloading file %s: %v", mf.Path, err)
 				}
-				fmt.Printf("\nFile %s downloaded successfully.\n", mf.Path)
+				// fmt.Printf("\nFile %s downloaded successfully.\n", mf.Path)
 			}
 		}
 	}

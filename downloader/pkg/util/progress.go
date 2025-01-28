@@ -2,9 +2,20 @@ package util
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/dustin/go-humanize"
+)
+
+const (
+	maxFileNameLength = 25 // reduced from 40 to keep line length under 80
+	progressBarWidth  = 20
+	totalLineWidth    = 80
+)
+
+var (
+	completedFiles = make(map[int]bool)
 )
 
 type ProgressInfo struct {
@@ -18,14 +29,40 @@ type ProgressInfo struct {
 	FileName   string
 }
 
+func truncateFileName(name string, maxLen int) string {
+	if len(name) <= maxLen {
+		return name + strings.Repeat(" ", maxLen-len(name))
+	}
+	return name[:maxLen-3] + "..." + strings.Repeat(" ", 0)
+}
+
+func createProgressBar(current, total, width int) string {
+	progress := float64(current) / float64(total)
+	filled := int(progress * float64(width))
+	return "[" + strings.Repeat("-", filled) + strings.Repeat(" ", width-filled) + "]"
+}
+
 func PrintProgress(info ProgressInfo) {
+	// Format common elements
 	percent := (float64(info.Current) / float64(info.Total)) * 100
-	fmt.Printf(
-		"\r[%d/%d] %s %.2f%% | %s/s | %s | elapsed %s",
-		info.FileIndex, info.TotalFiles, info.FileName,
-		percent,
-		humanize.Bytes(uint64(info.Speed)),
-		humanize.Bytes(uint64(info.FileSize)),
-		info.Elapsed.Truncate(time.Second).String(),
-	)
+	progressBar := createProgressBar(info.Current, info.Total, progressBarWidth)
+	fileName := truncateFileName(info.FileName, maxFileNameLength)
+	speed := humanize.Bytes(uint64(info.Speed))
+	size := humanize.Bytes(uint64(info.FileSize))
+
+	if info.Current >= info.Total && !completedFiles[info.FileIndex] {
+		completedFiles[info.FileIndex] = true
+		fmt.Printf("\r[%d/%d] %-*s %s 100%% (complete)\n",
+			info.FileIndex, info.TotalFiles,
+			maxFileNameLength-1, fileName,
+			createProgressBar(1, 1, progressBarWidth))
+	} else if !completedFiles[info.FileIndex] {
+		fmt.Printf("\r[%d/%d] %-*s %s %5.1f%% %-8s %5s",
+			info.FileIndex, info.TotalFiles,
+			maxFileNameLength-1, fileName, // Matched the -1 from above
+			progressBar,
+			percent,
+			speed,
+			size)
+	}
 }

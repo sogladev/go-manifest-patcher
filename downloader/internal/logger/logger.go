@@ -8,5 +8,4 @@ import (
 func InitLogger() {
 	log.SetOutput(os.Stdout)
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
-	log.Println("Logger initialized")
 }
