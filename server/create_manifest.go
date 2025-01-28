@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -30,7 +29,7 @@ func main() {
 	baseURL := "http://localhost:8080/" // Base URL for file download links
 
 	// Read all files in the directory
-	files, err := ioutil.ReadDir(filesDir)
+	files, err := os.ReadDir(filesDir)
 	if err != nil {
 		fmt.Printf("Error reading directory: %v\n", err)
 		return
@@ -51,10 +50,16 @@ func main() {
 			continue
 		}
 
+		fileInfo, err := os.Stat(filePath)
+		if err != nil {
+			fmt.Printf("Error getting file info for %s: %v\n", file.Name(), err)
+			continue
+		}
+
 		patchFile := PatchFile{
 			Path:   filePath,
 			Hash:   hash,
-			Size:   file.Size(),
+			Size:   fileInfo.Size(),
 			Custom: true,
 			URL:    baseURL + filePath,
 		}
@@ -95,5 +100,5 @@ func writeManifest(manifest Manifest, outputFile string) error {
 		return err
 	}
 
-	return ioutil.WriteFile(outputFile, data, 0644)
+	return os.WriteFile(outputFile, data, 0644)
 }
