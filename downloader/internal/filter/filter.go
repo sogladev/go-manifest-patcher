@@ -1,6 +1,8 @@
-package downloader
+package filter
 
 import (
+	"encoding/json"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -10,44 +12,47 @@ import (
 
 // Filter struct holds various patterns to ignore files
 type Filter struct {
-	ExactMatches     []string
-	ExtensionMatches []string
-	GlobPatterns     []string
-	BaseMatches      []string
-	ExcludePatterns  []string
+	ExactMatches     []string `json:"exact_matches"`
+	ExtensionMatches []string `json:"extension_matches"`
+	GlobPatterns     []string `json:"glob_patterns"`
+	BaseMatches      []string `json:"base_matches"`
+	ExcludePatterns  []string `json:"exclude_patterns"`
 }
 
-// NewFilter initializes a new Filter with predefined patterns
-func NewFilter() *Filter {
-	return &Filter{
-		ExcludePatterns: []string{
-			// "Documentation/*",   // Don't ignore documentation
-		},
-		ExactMatches: []string{
-			"README.md",
-			"go.sum",
-			"go.mod",
-			// Add more exact filenames as needed
-		},
-		ExtensionMatches: []string{
-			".gitignore",
-			".env",
-			// Add more file extensions to ignore
-		},
-		BaseMatches: []string{
-			"manifest.json",
-			// Add more base paths as needed
-		},
-		GlobPatterns: []string{
-			"*.log",     // Ignore all .log files
-			"temp/*",    // Ignore all files in temp directory
-			"*.tmp",     // Ignore all .tmp files
-			"*.bak",     // Ignore all .bak files
-			"*.go",      // Ignore all .go files
-			"docs/*.md", // Ignore markdown files in docs directory
-			// Add more glob patterns as needed
-		},
+// LoadFilter loads the filter configuration from a JSON file
+func LoadFilter(filename string) (*Filter, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
 	}
+	defer file.Close()
+
+	var f Filter
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&f)
+	if err != nil {
+		return nil, err
+	}
+
+	return &f, nil
+}
+
+// SaveFilter saves the filter configuration to a JSON file
+func SaveFilter(filename string, f *Filter) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ") // Pretty print JSON with indentation
+	err = encoder.Encode(f)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // IsIgnored checks if the given file path should be ignored based on the filter patterns

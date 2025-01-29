@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/sogladev/golang-terminal-downloader/downloader/internal/filter"
 	"github.com/sogladev/golang-terminal-downloader/pkg/manifest"
 	"github.com/sogladev/golang-terminal-downloader/pkg/util"
 
@@ -32,14 +33,13 @@ func findOperationIndex(operations []FileOperation, path string) int {
 	return -1
 }
 
-func ProcessManifest(m *manifest.Manifest) error {
-	filter := NewFilter()
+func ProcessManifest(m *manifest.Manifest, f *filter.Filter) error {
 
 	// Track files in the local folder for "extra files" detection
 	localFiles := map[string]bool{}
 	err := filepath.WalkDir(".", func(path string, d fs.DirEntry, err error) error {
 		if err == nil && !d.IsDir() {
-			if !filter.IsIgnored(path) {
+			if !f.IsIgnored(path) {
 				localFiles[path] = true
 			}
 		}

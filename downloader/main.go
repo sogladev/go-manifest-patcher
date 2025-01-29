@@ -8,6 +8,7 @@ import (
 
 	"github.com/sogladev/golang-terminal-downloader/downloader/internal/config"
 	"github.com/sogladev/golang-terminal-downloader/downloader/internal/downloader"
+	"github.com/sogladev/golang-terminal-downloader/downloader/internal/filter"
 	"github.com/sogladev/golang-terminal-downloader/downloader/internal/logger"
 	"github.com/sogladev/golang-terminal-downloader/pkg/manifest"
 )
@@ -30,8 +31,21 @@ func main() {
 		logger.Error.Fatalf("Failed to load manifest: %v", err)
 	}
 
+	// Load filter configuration
+	f, err := filter.LoadFilter("filter.json")
+	if err != nil {
+		if os.IsNotExist(err) {
+			logger.Debug.Println("No custom filter config found, using default filter")
+			f = filter.DefaultFilter()
+		} else {
+			logger.Error.Fatalf("Failed to parse filter.json: %v", err)
+		}
+	} else {
+		println("\nUsing custom filter config")
+	}
+
 	// Verify files and download missing or outdated files
-	err = downloader.ProcessManifest(m)
+	err = downloader.ProcessManifest(m, f)
 	if err != nil {
 		if err == downloader.ErrUserCancelled {
 			os.Exit(0) // Exit gracefully if user cancelled
