@@ -4,6 +4,8 @@ import (
 	"log"
 	"strings"
 
+	"github.com/common-nighthawk/go-figure"
+
 	"github.com/sogladev/golang-terminal-downloader/downloader/internal/config"
 	"github.com/sogladev/golang-terminal-downloader/downloader/internal/downloader"
 	"github.com/sogladev/golang-terminal-downloader/downloader/internal/logger"
@@ -11,6 +13,11 @@ import (
 )
 
 func main() {
+	// Print banner
+	myFigure := figure.NewFigure("Banner", "slant", true)
+	myFigure.Print()
+	println("")
+
 	// Initialize configuration
 	cfg := config.InitConfig()
 
