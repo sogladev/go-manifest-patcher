@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/sogladev/golang-terminal-downloader/pkg/manifest"
+	"github.com/sogladev/golang-terminal-downloader/server/internal/config"
 )
 
 // ThrottledReader wraps an io.ReadSeeker and throttles the data being read
@@ -37,19 +38,14 @@ func (t *ThrottledReader) Seek(offset int64, whence int) (int64, error) {
 }
 
 func main() {
-	// Add command-line flag for throttle interval
-	interval := flag.Int("interval", 10, "ms delay per chunk")
-	// Generate a manifest file for the input directory
-	createManifest := flag.Bool("create-manifest", false, "Generate manifest.json before starting the server")
-	filesDir := flag.String("files", "files", "Directory containing the files to process")
-	baseURL := flag.String("url", "http://localhost:8080/", "Base URL for file download links")
-	version := flag.String("version", "1.0", "Manifest version")
+	// Initialize configuration
+	cfg := config.InitConfig()
 
 	flag.Parse()
 
-	if *createManifest {
+	if cfg.CreateManifest {
 		fmt.Println("Generating manifest...")
-		err := manifest.GenerateManifest(*filesDir, *baseURL, *version)
+		err := manifest.GenerateManifest(cfg.FilesDir, cfg.BaseURL, cfg.Version)
 		if err != nil {
 			log.Fatalf("Error generating manifest: %v", err)
 		}
@@ -73,8 +69,8 @@ func main() {
 		// Wrap the file in a ThrottledReader
 		throttledReader := &ThrottledReader{
 			reader:   file,
-			interval: time.Duration(*interval) * time.Millisecond, // ms delay per chunk
-			chunk:    1024,                                        // 1KB per chunk
+			interval: time.Duration(cfg.Interval) * time.Millisecond, // ms delay per chunk
+			chunk:    1024,                                           // 1KB per chunk
 		}
 
 		// Serve the content using the throttled reader
