@@ -2,8 +2,6 @@ package downloader
 
 import (
 	"bufio"
-	"downloader/internal/manifest"
-	"downloader/pkg/util"
 	"fmt"
 	"io"
 	"io/fs"
@@ -13,6 +11,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/sogladev/golang-terminal-downloader/pkg/manifest"
+	"github.com/sogladev/golang-terminal-downloader/pkg/util"
+
 	"github.com/dustin/go-humanize"
 )
 
@@ -20,7 +21,6 @@ type FileOperation struct {
 	Path    string
 	Size    int64
 	NewSize int64
-	Status  string
 }
 
 func findOperationIndex(operations []FileOperation, path string) int {
@@ -76,16 +76,13 @@ func ProcessManifest(m *manifest.Manifest) error {
 
 		localHash, err := manifest.CalculateHash(file.Path)
 		if err == nil && localHash == file.Hash {
-			op.Status = "up-to-date"
 			upToDate = append(upToDate, file.Path)
 		} else if err == nil && localHash != file.Hash {
-			op.Status = "update"
 			outdated = append(outdated, file.Path)
 			totalDownloadSize += op.NewSize
 			totalDiskChange += op.NewSize - op.Size
 			operations = append(operations, op)
 		} else if os.IsNotExist(err) {
-			op.Status = "install"
 			missing = append(missing, file.Path)
 			totalDownloadSize += op.NewSize
 			totalDiskChange += op.NewSize
@@ -127,6 +124,15 @@ func ProcessManifest(m *manifest.Manifest) error {
 		)
 	}
 
+	fmt.Printf("\n %s\n", util.ColorCyan("Extra files (not in manifest):"))
+	for file := range localFiles {
+		info, _ := os.Stat(file)
+		fmt.Printf("  %s (Size: %s)\n",
+			util.ColorCyan(file),
+			humanize.Bytes(uint64(info.Size())),
+		)
+	}
+
 	// Display transaction summary
 	if len(operations) > 0 {
 		fmt.Printf("\nTransaction Summary:\n")
@@ -162,7 +168,6 @@ func ProcessManifest(m *manifest.Manifest) error {
 				if err != nil {
 					return fmt.Errorf("error downloading file %s: %v", mf.Path, err)
 				}
-				// fmt.Printf("\nFile %s downloaded successfully.\n", mf.Path)
 			}
 		}
 	}

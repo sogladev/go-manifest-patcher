@@ -9,7 +9,7 @@ type Config struct {
 }
 
 func InitConfig() *Config {
-	manifestURL := flag.String("manifest", "http://localhost:8080/manifest.json", "URL to the manifest.json file")
+	manifestURL := flag.String("manifest", "manifest.json", "Path to manifest.json file or URL (e.g., http://localhost:8080/manifest.json)")
 	flag.Parse()
 
 	return &Config{

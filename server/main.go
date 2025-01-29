@@ -2,11 +2,14 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/sogladev/golang-terminal-downloader/pkg/manifest"
 )
 
 // ThrottledReader wraps an io.ReadSeeker and throttles the data being read
@@ -34,9 +37,25 @@ func (t *ThrottledReader) Seek(offset int64, whence int) (int64, error) {
 }
 
 func main() {
-	// Add command-line flag for input directory
-	interval := flag.Int("interval", 100, "ms delay per chunk")
+	// Add command-line flag for throttle interval
+	interval := flag.Int("interval", 10, "ms delay per chunk")
+	// Generate a manifest file for the input directory
+	createManifest := flag.Bool("create-manifest", false, "Generate manifest.json before starting the server")
+	filesDir := flag.String("files", "files", "Directory containing the files to process")
+	baseURL := flag.String("url", "http://localhost:8080/", "Base URL for file download links")
+	version := flag.String("version", "1.0", "Manifest version")
+
 	flag.Parse()
+
+	if *createManifest {
+		fmt.Println("Generating manifest...")
+		err := manifest.GenerateManifest(*filesDir, *baseURL, *version)
+		if err != nil {
+			log.Fatalf("Error generating manifest: %v", err)
+		}
+		fmt.Println("Manifest generated successfully.")
+		return // Exit after generating the manifest
+	}
 
 	// Custom handler to throttle file downloads
 	http.HandleFunc("/files/", func(w http.ResponseWriter, r *http.Request) {

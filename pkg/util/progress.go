@@ -59,7 +59,7 @@ func PrintProgress(info ProgressInfo) {
 	} else if !completedFiles[info.FileIndex] {
 		fmt.Printf("\r[%d/%d] %-*s %s %5.1f%% %-8s %5s",
 			info.FileIndex, info.TotalFiles,
-			maxFileNameLength-1, fileName, // Matched the -1 from above
+			maxFileNameLength-1, fileName,
 			progressBar,
 			percent,
 			speed,
