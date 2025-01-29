@@ -20,13 +20,15 @@ jobs:
         go-version: '1.23.x'
         cache-dependency-path: go.sum
     - name: Build Server for Windows
-      run: GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o dist/server.exe ./server/main.go
+      run: GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o dist/server-windows-amd64.exe ./server/main.go
     - name: Build Server for Linux
-      run: GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o dist/server ./server/main.go
+      run: GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o dist/server-linux-amd64 ./server/main.go
     - name: Build Downloader for Windows
-      run: GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o dist/downloader.exe ./downloader/main.go
+      run: GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o dist/downloader-windows-amd64.exe ./downloader/main.go
     - name: Build Downloader for Linux
-      run: GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o dist/downloader ./downloader/main.go
+      run: GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o dist/downloader-linux-amd64 ./downloader/main.go
+    - name: Copy LICENSE to dist
+      run: cp LICENSE dist/
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
