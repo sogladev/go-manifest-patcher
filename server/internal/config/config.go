@@ -14,7 +14,7 @@ type Config struct {
 
 func InitConfig() *Config {
 	// Add command-line flag for throttle interval
-	interval := flag.Int("interval", 10, "ms delay per chunk")
+	interval := flag.Int("interval", 1, "ms delay per chunk")
 	// Generate a manifest file for the input directory
 	createManifest := flag.Bool("create-manifest", false, "Generate manifest.json before starting the server")
 	filesDir := flag.String("files", "files", "Directory containing the files to process")

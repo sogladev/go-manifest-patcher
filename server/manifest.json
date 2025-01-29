@@ -2,46 +2,46 @@
   "Version": "1.0",
   "Files": [
     {
-      "Path": "files/1MB_A.bin",
+      "Path": "files/A.bin",
       "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
       "Size": 1048576,
       "Custom": true,
-      "URL": "http://localhost:8080/files/1MB_A.bin"
+      "URL": "http://localhost:8080/files/A.bin"
     },
     {
-      "Path": "files/1MB_B.bin",
+      "Path": "files/B.bin",
       "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
       "Size": 1048576,
       "Custom": true,
-      "URL": "http://localhost:8080/files/1MB_B.bin"
+      "URL": "http://localhost:8080/files/B.bin"
     },
     {
-      "Path": "files/1MB_C.bin",
-      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
-      "Size": 1048576,
+      "Path": "files/C.bin",
+      "Hash": "38713d857ee00e14bd5d342b0cc8a413ef487192d6520415ae2fd7ecd1184166",
+      "Size": 2072576,
       "Custom": true,
-      "URL": "http://localhost:8080/files/1MB_C.bin"
+      "URL": "http://localhost:8080/files/C.bin"
     },
     {
-      "Path": "files/1MB_D.bin",
-      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
-      "Size": 1048576,
+      "Path": "files/D.bin",
+      "Hash": "38713d857ee00e14bd5d342b0cc8a413ef487192d6520415ae2fd7ecd1184166",
+      "Size": 2072576,
       "Custom": true,
-      "URL": "http://localhost:8080/files/1MB_D.bin"
+      "URL": "http://localhost:8080/files/D.bin"
     },
     {
-      "Path": "files/more/1MB_E.bin",
+      "Path": "files/more/E.bin",
       "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
       "Size": 1048576,
       "Custom": true,
-      "URL": "http://localhost:8080/files/more/1MB_E.bin"
+      "URL": "http://localhost:8080/files/more/E.bin"
     },
     {
-      "Path": "files/more/1MB_F.bin",
+      "Path": "files/more/F.bin",
       "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
       "Size": 1048576,
       "Custom": true,
-      "URL": "http://localhost:8080/files/more/1MB_F.bin"
+      "URL": "http://localhost:8080/files/more/F.bin"
     }
   ]
 }
