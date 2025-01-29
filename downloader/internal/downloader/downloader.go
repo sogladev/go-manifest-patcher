@@ -150,8 +150,7 @@ func ProcessManifest(m *manifest.Manifest) error {
 		response, _ := reader.ReadString('\n')
 
 		if !strings.EqualFold(strings.TrimSpace(response), "y") {
-			fmt.Println("Operation cancelled by user")
-			return nil
+			return ErrUserCancelled
 		}
 	}
 

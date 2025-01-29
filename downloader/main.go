@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"strings"
 
 	"github.com/common-nighthawk/go-figure"
@@ -32,7 +33,11 @@ func main() {
 	// Verify files and download missing or outdated files
 	err = downloader.ProcessManifest(m)
 	if err != nil {
-		logger.Error.Fatalf("Failed to process manifest: %v", err)
+		if err == downloader.ErrUserCancelled {
+			os.Exit(0) // Exit gracefully if user cancelled
+		} else {
+			logger.Error.Fatalf("Failed to process manifest: %v", err)
+		}
 	}
 
 	println("\n" + strings.Repeat("-", 80))
