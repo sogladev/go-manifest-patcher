@@ -1,0 +1,36 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23.x'
+        cache-dependency-path: go.sum
+    - name: Build Server for Windows
+      run: GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o dist/server.exe ./server/main.go
+    - name: Build Server for Linux
+      run: GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o dist/server ./server/main.go
+    - name: Build Downloader for Windows
+      run: GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o dist/downloader.exe ./downloader/main.go
+    - name: Build Downloader for Linux
+      run: GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o dist/downloader ./downloader/main.go
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        retention-days: 3
+        path: |
+          dist/
