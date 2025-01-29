@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"strings"
 
 	"github.com/common-nighthawk/go-figure"
@@ -22,18 +21,18 @@ func main() {
 	cfg := config.InitConfig()
 
 	// Initialize logger
-	logger.InitLogger()
+	logger.InitLogger(cfg.LogLevel)
 
 	// Load manifest from file or URL
 	m, err := manifest.LoadManifest(cfg.ManifestURL)
 	if err != nil {
-		log.Fatalf("Failed to load manifest: %v", err)
+		logger.Error.Fatalf("Failed to load manifest: %v", err)
 	}
 
 	// Verify files and download missing or outdated files
 	err = downloader.ProcessManifest(m)
 	if err != nil {
-		log.Fatalf("Failed to process manifest: %v", err)
+		logger.Error.Fatalf("Failed to process manifest: %v", err)
 	}
 
 	println("\n" + strings.Repeat("-", 80))

@@ -3,6 +3,8 @@ package downloader
 import (
 	"path/filepath"
 	"strings"
+
+	"github.com/sogladev/golang-terminal-downloader/downloader/internal/logger"
 )
 
 // Filter struct holds various patterns to ignore files
@@ -45,12 +47,14 @@ func (f *Filter) IsIgnored(path string) bool {
 
 	// Check for exact matches
 	if _, exists := f.ExactMatches[base]; exists {
+		logger.Debug.Printf("[+] Ignored (ExactMatch): %s\n", path)
 		return true
 	}
 
 	// Check for extension matches
 	ext := filepath.Ext(base)
 	if _, exists := f.ExtensionMatches[ext]; exists {
+		logger.Debug.Printf("[+] Ignored (ExtensionMatch): %s\n", path)
 		return true
 	}
 
@@ -58,6 +62,7 @@ func (f *Filter) IsIgnored(path string) bool {
 	for _, pattern := range f.GlobPatterns {
 		matched, err := filepath.Match(pattern, base)
 		if err == nil && matched {
+			logger.Debug.Printf("[+] Ignored (GlobMatch): %s\n", path)
 			return true
 		}
 
@@ -65,10 +70,12 @@ func (f *Filter) IsIgnored(path string) bool {
 		if strings.Contains(pattern, "/") {
 			matched, err := filepath.Match(pattern, path)
 			if err == nil && matched {
+				logger.Debug.Printf("[+] Ignored (GlobMatch): %s\n", path)
 				return true
 			}
 		}
 	}
 
+	logger.Debug.Printf("[-] Not ignored: %s\n", path)
 	return false
 }
