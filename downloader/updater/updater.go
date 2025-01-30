@@ -6,11 +6,9 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"regexp"
 	"runtime"
 	"time"
 
-	"github.com/sogladev/go-manifest-patcher/downloader/internal/logger"
 	"github.com/sogladev/go-manifest-patcher/pkg/prompt"
 	"github.com/sogladev/go-manifest-patcher/pkg/util"
 )
@@ -29,12 +27,6 @@ type Release struct {
 	} `json:"assets"`
 }
 
-var specialVersionRegex = regexp.MustCompile(`-\w+$`)
-
-func matchVersion(tagName string) bool {
-	return !specialVersionRegex.MatchString(tagName)
-}
-
 func CheckForUpdate(currentVersion string) (string, string, error) {
 	resp, err := http.Get(apiURL)
 	if err != nil {
@@ -51,27 +43,25 @@ func CheckForUpdate(currentVersion string) (string, string, error) {
 		return "", "", err
 	}
 
-	// Find the latest matching release
-	var latestRelease *Release
-	for _, release := range releases {
-		if matchVersion(release.TagName) {
-			latestRelease = &release
-			break
-		}
-	}
-
-	if latestRelease == nil {
-		return "", "", nil
-	}
-
-	logger.Debug.Printf("Current version: %s\n", currentVersion)
-	logger.Debug.Printf("Latest version: %s\n", latestRelease.TagName)
-	if latestRelease.TagName != currentVersion {
-		for _, asset := range latestRelease.Assets {
-			if asset.Name == GetExecutableName() {
-				return latestRelease.TagName, asset.BrowserDownloadURL, nil
+	// Loop through releases and find the best special edition
+	bestVersion := ""
+	bestURL := ""
+	for _, rel := range releases {
+		if MatchSpecialEdition(rel.TagName) {
+			if bestVersion == "" || CompareVersions(rel.TagName, bestVersion) > 0 {
+				// Update best version
+				bestVersion = rel.TagName
+				// Choose first asset or refine for each release
+				if len(rel.Assets) > 0 {
+					bestURL = rel.Assets[0].BrowserDownloadURL
+				}
 			}
 		}
+	}
+
+	// Compare our best with current version
+	if bestVersion != "" && CompareVersions(bestVersion, currentVersion) > 0 {
+		return bestVersion, bestURL, nil
 	}
 
 	return "", "", nil
