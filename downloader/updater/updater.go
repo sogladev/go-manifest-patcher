@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/sogladev/go-manifest-patcher/downloader/internal/logger"
 	"github.com/sogladev/go-manifest-patcher/pkg/prompt"
 	"github.com/sogladev/go-manifest-patcher/pkg/util"
 )
@@ -63,6 +64,8 @@ func CheckForUpdate(currentVersion string) (string, string, error) {
 		return "", "", nil
 	}
 
+	logger.Debug.Printf("Current version: %s\n", currentVersion)
+	logger.Debug.Printf("Latest version: %s\n", latestRelease.TagName)
 	if latestRelease.TagName != currentVersion {
 		for _, asset := range latestRelease.Assets {
 			if asset.Name == GetExecutableName() {
