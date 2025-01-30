@@ -12,7 +12,7 @@ var ErrUserCancelled = errors.New("operation cancelled by user")
 
 func PromptyN(message string) error {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("%s [y/N]: ", message)
+	fmt.Print(message)
 
 	input, err := reader.ReadString('\n')
 	if err != nil {
