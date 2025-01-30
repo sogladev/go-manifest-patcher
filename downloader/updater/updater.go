@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"regexp"
 	"runtime"
 	"time"
 
@@ -16,7 +17,7 @@ import (
 const (
 	repoOwner = "sogladev"
 	repoName  = "go-manifest-patcher"
-	apiURL    = "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/releases/latest"
+	apiURL    = "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/releases"
 )
 
 type Release struct {
@@ -27,6 +28,12 @@ type Release struct {
 	} `json:"assets"`
 }
 
+var specialVersionRegex = regexp.MustCompile(`-\w+$`)
+
+func matchVersion(tagName string) bool {
+	return !specialVersionRegex.MatchString(tagName)
+}
+
 func CheckForUpdate(currentVersion string) (string, string, error) {
 	resp, err := http.Get(apiURL)
 	if err != nil {
@@ -35,18 +42,31 @@ func CheckForUpdate(currentVersion string) (string, string, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", "", fmt.Errorf("failed to fetch latest release: %s", resp.Status)
+		return "", "", fmt.Errorf("failed to fetch releases: %s", resp.Status)
 	}
 
-	var release Release
-	if err := json.NewDecoder(resp.Body).Decode(&release); err != nil {
+	var releases []Release
+	if err := json.NewDecoder(resp.Body).Decode(&releases); err != nil {
 		return "", "", err
 	}
 
-	if release.TagName != currentVersion {
-		for _, asset := range release.Assets {
+	// Find the latest matching release
+	var latestRelease *Release
+	for _, release := range releases {
+		if matchVersion(release.TagName) {
+			latestRelease = &release
+			break
+		}
+	}
+
+	if latestRelease == nil {
+		return "", "", nil
+	}
+
+	if latestRelease.TagName != currentVersion {
+		for _, asset := range latestRelease.Assets {
 			if asset.Name == GetExecutableName() {
-				return release.TagName, asset.BrowserDownloadURL, nil
+				return latestRelease.TagName, asset.BrowserDownloadURL, nil
 			}
 		}
 	}
