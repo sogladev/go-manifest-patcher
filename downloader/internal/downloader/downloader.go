@@ -130,12 +130,20 @@ func ProcessManifest(m *manifest.Manifest, f *filter.Filter) error {
 	}
 
 	fmt.Printf("\n %s\n", util.ColorCyan("Extra files (not in manifest):"))
+	extraFilesCount := 0
 	for file := range localFiles {
-		info, _ := os.Stat(file)
-		fmt.Printf("  %s (Size: %s)\n",
-			util.ColorCyan(file),
-			humanize.Bytes(uint64(info.Size())),
-		)
+		if extraFilesCount < 10 {
+			info, _ := os.Stat(file)
+			fmt.Printf("  %s (Size: %s)\n",
+				util.ColorCyan(file),
+				humanize.Bytes(uint64(info.Size())),
+			)
+		}
+		extraFilesCount++
+	}
+	// Display the number of extra files if more than 10
+	if extraFilesCount > 10 {
+		fmt.Printf("  ...and %d more files\n", extraFilesCount-10)
 	}
 
 	// Display transaction summary
