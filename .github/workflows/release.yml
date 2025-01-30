@@ -21,7 +21,7 @@ jobs:
         id: extract
         run: |
           version=$(grep -oP 'const currentVersion = "\K[^"]+' downloader/main.go)
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
   release:
     needs: extract_version
@@ -37,7 +37,7 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v2
         env:
-            GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
           tag_name: ${{ needs.extract_version.outputs.version }}
           name: Release ${{ needs.extract_version.outputs.version }}
