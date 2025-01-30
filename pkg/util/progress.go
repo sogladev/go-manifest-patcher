@@ -50,15 +50,17 @@ func PrintProgress(info ProgressInfo) {
 	speed := humanize.Bytes(uint64(info.Speed))
 	size := humanize.Bytes(uint64(info.FileSize))
 
+	totalFilesWidth := len(fmt.Sprintf("%d", info.TotalFiles))
+
 	if info.Current >= info.Total && !completedFiles[info.FileIndex] {
 		completedFiles[info.FileIndex] = true
-		fmt.Printf("\r[%d/%d] %-*s %s 100%% (complete)\n",
-			info.FileIndex, info.TotalFiles,
+		fmt.Printf("\r[%*d/%d] %-*s %s 100%% (complete)\n",
+			totalFilesWidth, info.FileIndex, info.TotalFiles,
 			maxFileNameLength-1, fileName,
 			createProgressBar(1, 1, progressBarWidth))
 	} else if !completedFiles[info.FileIndex] {
-		fmt.Printf("\r[%d/%d] %-*s %s %5.1f%% %-8s %5s",
-			info.FileIndex, info.TotalFiles,
+		fmt.Printf("\r[%*d/%d] %-*s %s %5.1f%% %-8s %5s",
+			totalFilesWidth, info.FileIndex, info.TotalFiles,
 			maxFileNameLength-1, fileName,
 			progressBar,
 			percent,
