@@ -17,7 +17,7 @@ type Config struct {
 }
 
 func InitConfig() *Config {
-	manifestURL := flag.String("manifest", "manifest.json", "Path to manifest.json file or URL (e.g., http://localhost:8080/manifest.json)")
+	manifestURL := flag.String("manifest", "https://updater.project-epoch.net/api/manifest?environment=production&internal_key=", "Path to manifest.json file or URL (e.g., http://localhost:8080/manifest.json)")
 	logLevel := flag.String("log-level", "info", "Set the log level (debug, info, warning, error)")
 	saveFilter := flag.Bool("save-filter", false, "Save the default filter to filter.json and exit")
 	skipUpdate := flag.Bool("skip-update", false, "Skip update check (useful for development)")

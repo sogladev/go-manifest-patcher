@@ -19,12 +19,15 @@ import (
 	"github.com/sogladev/go-manifest-patcher/pkg/prompt"
 )
 
-const currentVersion = "v1.0.0"
+const currentVersion = "v1.0.0-epoch"
 
 func main() {
 	// Print banner
-	myFigure := figure.NewFigure("Banner", "slant", true)
+	myFigure := figure.NewFigure("Project Epoch", "slant", true)
 	myFigure.Print()
+	println("unofficial patch download utility - Sogladev")
+	println("Bugs or issues: https://github.com/sogladev/go-manifest-patcher/")
+	println(strings.Repeat("-", 96))
 	println("")
 
 	// Initialize configuration
@@ -95,7 +98,7 @@ func main() {
 		}
 	}
 
-	println("\n" + strings.Repeat("-", 80))
+	println("\n" + strings.Repeat("-", 96))
 	println("All files are up to date or successfully downloaded.")
 
 	// Launch the game client

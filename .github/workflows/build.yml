@@ -22,9 +22,9 @@ jobs:
     - name: Build Server for Linux
       run: GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o dist/server-linux-amd64 ./server/main.go
     - name: Build Downloader for Windows
-      run: GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o dist/patcher-windows-amd64.exe ./downloader/main.go
+      run: GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o dist/patcher-epoch-windows-amd64.exe ./downloader/main.go
     - name: Build Downloader for Linux
-      run: GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o dist/patcher-linux-amd64 ./downloader/main.go
+      run: GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o dist/patcher-epoch-linux-amd64 ./downloader/main.go
     - name: Copy LICENSE to dist
       run: cp LICENSE dist/
     - name: Upload Build Artifacts

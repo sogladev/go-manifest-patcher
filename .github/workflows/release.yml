@@ -44,8 +44,8 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            patcher-linux-amd64
-            patcher-windows-amd64.exe
+            patcher-epoch-linux-amd64
+            patcher-epoch-windows-amd64.exe
             server-linux-amd64
             server-windows-amd64.exe
             LICENSE
