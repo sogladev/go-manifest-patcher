@@ -43,7 +43,6 @@ Usage:
   -skip-update
         Skip update check (useful for development)
 
-----------------
 ```
 
 ### Transaction Overview
@@ -58,7 +57,7 @@ The downloader provides a detailed overview before executing downloads:
 
 You'll be prompted to confirm before proceeding with downloads.
 
-```bash
+```
  go run main.go -manifest http://localhost:8080/manifest.json
     ____
    / __ )  ____ _   ____    ____   ___    _____
@@ -95,7 +94,7 @@ Is this ok [y/N]: y
 [2/3] F.bin                     [--------------------] 100% (complete) 1.0 MB
 [3/3] C.bin                     [--------------------] 100% (complete) 2.1 MB
 
---------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 All files are up to date or successfully downloaded.
 ```
 
