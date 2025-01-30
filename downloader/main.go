@@ -18,7 +18,7 @@ import (
 	"github.com/sogladev/go-manifest-patcher/pkg/prompt"
 )
 
-const currentVersion = "v0.0.3"
+const currentVersion = "v1.0.0"
 
 func main() {
 	// Print banner
