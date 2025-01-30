@@ -33,30 +33,35 @@ func main() {
 	logger.InitLogger(cfg.LogLevel)
 
 	// Check for updates
-	newVersion, downloadURL, err := updater.CheckForUpdate(currentVersion)
-	if err != nil {
-		log.Fatalf("Failed to check for updates: %v", err)
-	}
-	if newVersion != "" {
-		fmt.Printf("New version available: %s\n", newVersion)
-		err = prompt.PromptyN("Do you want to update? [y/N]: ")
-		if err == nil {
-			tempFile := "new-" + updater.GetExecutableName()
-			err := updater.Download(downloadURL, tempFile)
-			if err != nil {
-				log.Fatalf("Failed to download update: %v", err)
-			}
-			if runtime.GOOS == "windows" {
-				// On Windows we cannot replace the running executable, so we need to inform the user
-				fmt.Printf("Update downloaded as: %v.\nPlease rename the new executable to %v and restart the application!\n", tempFile, updater.GetExecutableName())
-			} else {
-				err = updater.ReplaceExecutable(tempFile)
+	if cfg.SkipUpdate {
+		logger.Debug.Println("Skipping update check as per configuration")
+	} else {
+		newVersion, downloadURL, err := updater.CheckForUpdate(currentVersion)
+		if err != nil {
+			log.Fatalf("Failed to check for updates: %v", err)
+		}
+		if newVersion != "" {
+			fmt.Printf("Current version : %s\n", currentVersion)
+			fmt.Printf("New version available: %s\n", newVersion)
+			err = prompt.PromptyN("Do you want to update? [y/N]: ")
+			if err == nil {
+				tempFile := "new-" + updater.GetExecutableName()
+				err := updater.Download(downloadURL, tempFile)
 				if err != nil {
-					log.Fatalf("Failed to replace executable: %v", err)
+					log.Fatalf("Failed to download update: %v", err)
 				}
-				fmt.Println("Update successful. Please restart the application.")
+				if runtime.GOOS == "windows" {
+					// On Windows we cannot replace the running executable, so we need to inform the user
+					fmt.Printf("Update downloaded as: %v.\nPlease rename the new executable to %v and restart the application!\n", tempFile, updater.GetExecutableName())
+				} else {
+					err = updater.ReplaceExecutable(tempFile)
+					if err != nil {
+						log.Fatalf("Failed to replace executable: %v", err)
+					}
+					fmt.Println("Update successful. Please restart the application.")
+				}
+				return
 			}
-			return
 		}
 	}
 
