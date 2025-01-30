@@ -57,6 +57,9 @@ func SaveFilter(filename string, f *Filter) error {
 
 // IsIgnored checks if the given file path should be ignored based on the filter patterns
 func (f *Filter) IsIgnored(path string) bool {
+	// Normalize the path to use forward slashes
+	normalizedPath := filepath.ToSlash(path)
+
 	// First check if path matches any exclude patterns
 	for _, pattern := range f.ExcludePatterns {
 		g := glob.MustCompile(pattern)
@@ -83,8 +86,7 @@ func (f *Filter) IsIgnored(path string) bool {
 		}
 	}
 
-	// Check base paths (exact matches with path separators normalized)
-	normalizedPath := filepath.ToSlash(path)
+	// Check base paths
 	for _, basePath := range f.BaseMatches {
 		if normalizedPath == filepath.ToSlash(basePath) {
 			logger.Debug.Printf("[+] Ignored (BasePath): %s\n", path)
@@ -94,8 +96,8 @@ func (f *Filter) IsIgnored(path string) bool {
 
 	// Check glob patterns
 	for _, pattern := range f.GlobPatterns {
-		g := glob.MustCompile(pattern)
-		if g.Match(path) {
+		g := glob.MustCompile(filepath.ToSlash(pattern))
+		if g.Match(normalizedPath) {
 			logger.Debug.Printf("[+] Ignored (GlobMatch): %s\n", path)
 			return true
 		}
