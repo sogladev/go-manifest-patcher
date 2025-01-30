@@ -2,7 +2,7 @@
 
 A lightweight Go-based terminal patcher that uses a manifest to manage file updates. It displays a transaction overview, provides detailed progress, and only overwrites files listed in the manifest. It does not remove extra files. Designed for easy extension with minimal dependencies.
 
-![downloader](images/downloader.gif)
+![patcher](images/patcher.gif)
 
 ## Features
 
