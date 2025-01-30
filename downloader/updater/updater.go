@@ -82,7 +82,7 @@ func UpdateWithProgress(currentVersion string) error {
 	return nil
 }
 
-func DownloadAndReplace(url, dest string) error {
+func Download(url, dest string) error {
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
@@ -145,4 +145,18 @@ func GetExecutableName() string {
 		return "downloader-windows-amd64.exe"
 	}
 	return "downloader-linux-amd64"
+}
+
+func ReplaceExecutable(newPath string) error {
+	execPath, err := os.Executable()
+	if err != nil {
+		return err
+	}
+
+	err = os.Rename(newPath, execPath)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

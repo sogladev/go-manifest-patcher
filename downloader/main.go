@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 	"strings"
 
 	"github.com/common-nighthawk/go-figure"
@@ -36,18 +37,25 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to check for updates: %v", err)
 	}
-
 	if newVersion != "" {
 		fmt.Printf("New version available: %s\n", newVersion)
 		err = prompt.PromptyN("Do you want to update? [y/N]: ")
 		if err == nil {
 			tempFile := "new-" + updater.GetExecutableName()
-			err := updater.DownloadAndReplace(downloadURL, tempFile)
+			err := updater.Download(downloadURL, tempFile)
 			if err != nil {
 				log.Fatalf("Failed to download update: %v", err)
 			}
-			fmt.Printf("Update downloaded as: %v.\nPlease rename the new executable to %v and restart application!", tempFile, updater.GetExecutableName())
-			os.Exit(0) // Exit gracefully
+			if runtime.GOOS == "windows" {
+				// On Windows we cannot replace the running executable, so we need to inform the user
+				fmt.Printf("Update downloaded as: %v.\nPlease rename the new executable to %v and restart the application!\n", tempFile, updater.GetExecutableName())
+			} else {
+				err = updater.ReplaceExecutable(tempFile)
+				if err != nil {
+					log.Fatalf("Failed to replace executable: %v", err)
+				}
+				fmt.Println("Update successful. Please restart the application.")
+			}
 			return
 		}
 	}
@@ -75,7 +83,7 @@ func main() {
 	err = downloader.ProcessManifest(m, f)
 	if err != nil {
 		if err == prompt.ErrUserCancelled {
-			os.Exit(0) // Exit gracefully if user cancelled
+			return
 		} else {
 			logger.Error.Fatalf("Failed to process manifest: %v", err)
 		}
