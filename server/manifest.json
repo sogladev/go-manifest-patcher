@@ -3,42 +3,42 @@
   "Files": [
     {
       "Path": "files/A.bin",
-      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
+      "Hash": "b6d81b360a5672d80c27430f39153e2c",
       "Size": 1048576,
       "Custom": true,
       "URL": "http://localhost:8080/files/A.bin"
     },
     {
       "Path": "files/B.bin",
-      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
+      "Hash": "b6d81b360a5672d80c27430f39153e2c",
       "Size": 1048576,
       "Custom": true,
       "URL": "http://localhost:8080/files/B.bin"
     },
     {
       "Path": "files/C.bin",
-      "Hash": "38713d857ee00e14bd5d342b0cc8a413ef487192d6520415ae2fd7ecd1184166",
+      "Hash": "621d99baf84ab16fd4d3c7a593015fcb",
       "Size": 2072576,
       "Custom": true,
       "URL": "http://localhost:8080/files/C.bin"
     },
     {
       "Path": "files/D.bin",
-      "Hash": "38713d857ee00e14bd5d342b0cc8a413ef487192d6520415ae2fd7ecd1184166",
+      "Hash": "621d99baf84ab16fd4d3c7a593015fcb",
       "Size": 2072576,
       "Custom": true,
       "URL": "http://localhost:8080/files/D.bin"
     },
     {
       "Path": "files/more/E.bin",
-      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
+      "Hash": "b6d81b360a5672d80c27430f39153e2c",
       "Size": 1048576,
       "Custom": true,
       "URL": "http://localhost:8080/files/more/E.bin"
     },
     {
       "Path": "files/more/F.bin",
-      "Hash": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58",
+      "Hash": "b6d81b360a5672d80c27430f39153e2c",
       "Size": 1048576,
       "Custom": true,
       "URL": "http://localhost:8080/files/more/F.bin"

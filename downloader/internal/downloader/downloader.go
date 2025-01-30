@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/sogladev/golang-terminal-downloader/downloader/internal/filter"
+	"github.com/sogladev/golang-terminal-downloader/downloader/internal/logger"
 	"github.com/sogladev/golang-terminal-downloader/pkg/manifest"
 	"github.com/sogladev/golang-terminal-downloader/pkg/prompt"
 	"github.com/sogladev/golang-terminal-downloader/pkg/util"
@@ -18,9 +19,11 @@ import (
 )
 
 type FileOperation struct {
-	Path    string
-	Size    int64
-	NewSize int64
+	Path      string
+	Size      int64
+	NewSize   int64
+	LocalHash string
+	NewHash   string
 }
 
 func findOperationIndex(operations []FileOperation, path string) int {
@@ -73,10 +76,12 @@ func ProcessManifest(m *manifest.Manifest, f *filter.Filter) error {
 			op.Size = info.Size()
 		}
 
-		localHash, err := manifest.CalculateHash(file.Path)
+		localHash, err := manifest.CalculateHashMD5(file.Path)
 		if err == nil && localHash == file.Hash {
 			upToDate = append(upToDate, file.Path)
 		} else if err == nil && localHash != file.Hash {
+			op.LocalHash = localHash
+			op.NewHash = file.Hash
 			outdated = append(outdated, file.Path)
 			totalDownloadSize += op.NewSize
 			totalDiskChange += op.NewSize - op.Size
@@ -106,12 +111,13 @@ func ProcessManifest(m *manifest.Manifest, f *filter.Filter) error {
 	fmt.Printf("\n %s\n", util.ColorYellow("Outdated files (will be updated):"))
 	for _, file := range outdated {
 		info, _ := os.Stat(file)
-		newSize := operations[findOperationIndex(operations, file)].NewSize
+		op := operations[findOperationIndex(operations, file)]
 		fmt.Printf("  %s (Current Size: %s, New Size: %s)\n",
 			util.ColorYellow(file),
 			humanize.Bytes(uint64(info.Size())),
-			humanize.Bytes(uint64(newSize)),
+			humanize.Bytes(uint64(op.NewSize)),
 		)
+		logger.Debug.Printf("File: %s, Current Hash: %s, New Hash: %s", file, op.LocalHash, op.NewHash)
 	}
 
 	fmt.Printf("\n %s\n", util.ColorRed("Missing files (will be downloaded):"))

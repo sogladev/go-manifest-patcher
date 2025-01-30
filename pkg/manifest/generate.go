@@ -39,7 +39,7 @@ func GenerateManifest(filesDir, baseURL, version string) error {
 			return nil
 		}
 
-		hash, err := CalculateHash(path)
+		hash, err := CalculateHashMD5(path)
 		if err != nil {
 			fmt.Printf("Error calculating hash for %s: %v\n", path, err)
 			return nil
