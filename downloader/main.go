@@ -9,16 +9,16 @@ import (
 
 	"github.com/common-nighthawk/go-figure"
 
-	"github.com/sogladev/golang-terminal-downloader/downloader/internal/config"
-	"github.com/sogladev/golang-terminal-downloader/downloader/internal/downloader"
-	"github.com/sogladev/golang-terminal-downloader/downloader/internal/filter"
-	"github.com/sogladev/golang-terminal-downloader/downloader/internal/logger"
-	"github.com/sogladev/golang-terminal-downloader/downloader/updater"
-	"github.com/sogladev/golang-terminal-downloader/pkg/manifest"
-	"github.com/sogladev/golang-terminal-downloader/pkg/prompt"
+	"github.com/sogladev/go-manifest-patcher/downloader/internal/config"
+	"github.com/sogladev/go-manifest-patcher/downloader/internal/downloader"
+	"github.com/sogladev/go-manifest-patcher/downloader/internal/filter"
+	"github.com/sogladev/go-manifest-patcher/downloader/internal/logger"
+	"github.com/sogladev/go-manifest-patcher/downloader/updater"
+	"github.com/sogladev/go-manifest-patcher/pkg/manifest"
+	"github.com/sogladev/go-manifest-patcher/pkg/prompt"
 )
 
-const currentVersion = "v0.0.1"
+const currentVersion = "v0.0.3"
 
 func main() {
 	// Print banner

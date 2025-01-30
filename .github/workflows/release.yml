@@ -44,8 +44,8 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            downloader-linux-amd64
-            downloader-windows-amd64.exe
+            patcher-linux-amd64
+            patcher-windows-amd64.exe
             server-linux-amd64
             server-windows-amd64.exe
             LICENSE

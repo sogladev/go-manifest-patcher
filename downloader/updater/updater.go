@@ -9,13 +9,13 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/sogladev/golang-terminal-downloader/pkg/prompt"
-	"github.com/sogladev/golang-terminal-downloader/pkg/util"
+	"github.com/sogladev/go-manifest-patcher/pkg/prompt"
+	"github.com/sogladev/go-manifest-patcher/pkg/util"
 )
 
 const (
 	repoOwner = "sogladev"
-	repoName  = "golang-terminal-file-downloader"
+	repoName  = "go-manifest-patcher"
 	apiURL    = "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/releases/latest"
 )
 
@@ -72,7 +72,7 @@ func UpdateWithProgress(currentVersion string) error {
 	}
 
 	tempFile := GetExecutableName() + ".new"
-	err = DownloadAndReplace(downloadURL, tempFile)
+	err = Download(downloadURL, tempFile)
 	if err != nil {
 		os.Remove(tempFile) // Clean up temp file
 		return fmt.Errorf("update failed: %w", err)
@@ -142,9 +142,9 @@ func (pw *progressWriter) Write(p []byte) (int, error) {
 
 func GetExecutableName() string {
 	if runtime.GOOS == "windows" {
-		return "downloader-windows-amd64.exe"
+		return "patcher-windows-amd64.exe"
 	}
-	return "downloader-linux-amd64"
+	return "patcher-linux-amd64"
 }
 
 func ReplaceExecutable(newPath string) error {

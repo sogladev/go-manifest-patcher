@@ -1,6 +1,6 @@
-# Golang Terminal File Downloader
+# Go Manifest Patcher
 
-A lightweight Go-based terminal downloader that uses a manifest to manage file updates. It displays a transaction overview, provides detailed progress, and only overwrites files listed in the manifest. It does not remove extra files. Designed for easy extension with minimal dependencies.
+A lightweight Go-based terminal patcher that uses a manifest to manage file updates. It displays a transaction overview, provides detailed progress, and only overwrites files listed in the manifest. It does not remove extra files. Designed for easy extension with minimal dependencies.
 
 ![downloader](images/downloader.gif)
 
@@ -8,6 +8,8 @@ A lightweight Go-based terminal downloader that uses a manifest to manage file u
 
 - Manifest-based file synchronization
 - Transaction overview before downloading
+- Automatic updates from latest github release
+- Cross-platform, windows and linux
 - Smart file categorization:
   - Up-to-date files (skipped)
   - Outdated files (updated)
@@ -36,6 +38,11 @@ Usage:
         Set the log level (debug, info, warning, error) (default "info")
   -manifest string
         Path to manifest.json file or URL (e.g., http://localhost:8080/manifest.json) (default "manifest.json")
+  -save-filter
+        Save the default filter to filter.json and exit
+  -skip-update
+        Skip update check (useful for development)
+
 ----------------
 ```
 

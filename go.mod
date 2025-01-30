@@ -1,4 +1,4 @@
-module github.com/sogladev/golang-terminal-downloader
+module github.com/sogladev/go-manifest-patcher
 
 go 1.23.5
 

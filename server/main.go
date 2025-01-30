@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/sogladev/golang-terminal-downloader/pkg/manifest"
-	"github.com/sogladev/golang-terminal-downloader/server/internal/config"
+	"github.com/sogladev/go-manifest-patcher/pkg/manifest"
+	"github.com/sogladev/go-manifest-patcher/server/internal/config"
 )
 
 // ThrottledReader wraps an io.ReadSeeker and throttles the data being read

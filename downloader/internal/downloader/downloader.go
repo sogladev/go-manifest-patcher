@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/sogladev/golang-terminal-downloader/downloader/internal/filter"
-	"github.com/sogladev/golang-terminal-downloader/downloader/internal/logger"
-	"github.com/sogladev/golang-terminal-downloader/pkg/manifest"
-	"github.com/sogladev/golang-terminal-downloader/pkg/prompt"
-	"github.com/sogladev/golang-terminal-downloader/pkg/util"
+	"github.com/sogladev/go-manifest-patcher/downloader/internal/filter"
+	"github.com/sogladev/go-manifest-patcher/downloader/internal/logger"
+	"github.com/sogladev/go-manifest-patcher/pkg/manifest"
+	"github.com/sogladev/go-manifest-patcher/pkg/prompt"
+	"github.com/sogladev/go-manifest-patcher/pkg/util"
 
 	"github.com/dustin/go-humanize"
 )

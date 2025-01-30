@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/sogladev/golang-terminal-downloader/downloader/internal/filter"
+	"github.com/sogladev/go-manifest-patcher/downloader/internal/filter"
 )
 
 type Config struct {

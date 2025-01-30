@@ -1,6 +1,6 @@
-# Test Server for Terminal Downloader
+# Test Server for Go Manifest Patcher
 
-This is a test server application designed to simulate file downloads for the terminal downloader client. It provides manifest generation and throttled file serving capabilities.
+This is a test server application designed to simulate file downloads for the patcher download client. It provides manifest generation and throttled file serving capabilities.
 
 ## Features
 

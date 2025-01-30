@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/gobwas/glob"
-	"github.com/sogladev/golang-terminal-downloader/downloader/internal/logger"
+	"github.com/sogladev/go-manifest-patcher/downloader/internal/logger"
 )
 
 // Filter struct holds various patterns to ignore files
