@@ -11,6 +11,7 @@ import (
 	"github.com/sogladev/golang-terminal-downloader/downloader/internal/filter"
 	"github.com/sogladev/golang-terminal-downloader/downloader/internal/logger"
 	"github.com/sogladev/golang-terminal-downloader/pkg/manifest"
+	"github.com/sogladev/golang-terminal-downloader/pkg/prompt"
 )
 
 func main() {
@@ -47,7 +48,7 @@ func main() {
 	// Verify files and download missing or outdated files
 	err = downloader.ProcessManifest(m, f)
 	if err != nil {
-		if err == downloader.ErrUserCancelled {
+		if err == prompt.ErrUserCancelled {
 			os.Exit(0) // Exit gracefully if user cancelled
 		} else {
 			logger.Error.Fatalf("Failed to process manifest: %v", err)

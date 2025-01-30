@@ -1,18 +1,17 @@
 package downloader
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/sogladev/golang-terminal-downloader/downloader/internal/filter"
 	"github.com/sogladev/golang-terminal-downloader/pkg/manifest"
+	"github.com/sogladev/golang-terminal-downloader/pkg/prompt"
 	"github.com/sogladev/golang-terminal-downloader/pkg/util"
 
 	"github.com/dustin/go-humanize"
@@ -146,11 +145,10 @@ func ProcessManifest(m *manifest.Manifest, f *filter.Filter) error {
 			humanize.Bytes(uint64(totalDiskChange)))
 
 		fmt.Print("Is this ok [y/N]: ")
-		reader := bufio.NewReader(os.Stdin)
-		response, _ := reader.ReadString('\n')
 
-		if !strings.EqualFold(strings.TrimSpace(response), "y") {
-			return ErrUserCancelled
+		err = prompt.PromptyN("Is this ok [y/N]: ")
+		if err != nil {
+			return err
 		}
 	}
 
