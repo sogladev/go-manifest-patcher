@@ -2,9 +2,11 @@ package config
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	"github.com/sogladev/go-manifest-patcher/downloader/internal/filter"
+	"github.com/sogladev/go-manifest-patcher/downloader/internal/logger"
 )
 
 type Config struct {
@@ -23,7 +25,11 @@ func InitConfig() *Config {
 
 	if *saveFilter {
 		f := filter.DefaultFilter()
-		filter.SaveFilter("filter.json", f)
+		err := filter.SaveFilter("filter.json", f)
+		if err != nil {
+			logger.Error.Fatalf("Failed to save filter.json: %v", err)
+		}
+		fmt.Println("Saved default filter to filter.json")
 		os.Exit(0)
 	}
 

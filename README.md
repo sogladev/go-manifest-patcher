@@ -135,6 +135,39 @@ The manifest.json should follow this structure:
 
 ```
 
+### Filter Format
+Extra files are displayed using a default filter. To customize the filter, first save it and then edit the saved file:
+
+```bash
+go run main.go -save-filter
+```
+
+```json
+{
+  "exact_matches": [
+    "README.md",
+    "go.sum",
+    "go.mod"
+  ],
+  "extension_matches": [
+    ".gitignore",
+    ".env"
+  ],
+  "glob_patterns": [
+    "*.log",
+    "temp/*",
+    "*.tmp",
+    "*.bak",
+    "*.go",
+    "docs/*.md"
+  ],
+  "base_matches": [
+    "manifest.json"
+  ],
+  "exclude_patterns": []
+}
+```
+
 ## Testing
 
 For development testing, use the companion test server application which provides:

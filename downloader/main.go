@@ -38,7 +38,7 @@ func main() {
 	} else {
 		newVersion, downloadURL, err := updater.CheckForUpdate(currentVersion)
 		if err != nil {
-			log.Fatalf("Failed to check for updates: %v", err)
+			logger.Error.Fatalf("Failed to check for updates: %v", err)
 		}
 		if newVersion != "" {
 			fmt.Printf("Current version : %s\n", currentVersion)

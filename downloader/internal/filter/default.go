@@ -15,6 +15,7 @@ func DefaultFilter() *Filter {
 		ExtensionMatches: []string{
 			".gitignore",
 			".env",
+			".log",
 			// Add more file extensions to ignore
 		},
 		BaseMatches: []string{
