@@ -13,6 +13,7 @@ import (
 	"github.com/sogladev/go-manifest-patcher/downloader/internal/downloader"
 	"github.com/sogladev/go-manifest-patcher/downloader/internal/filter"
 	"github.com/sogladev/go-manifest-patcher/downloader/internal/logger"
+	"github.com/sogladev/go-manifest-patcher/downloader/launch"
 	"github.com/sogladev/go-manifest-patcher/downloader/updater"
 	"github.com/sogladev/go-manifest-patcher/pkg/manifest"
 	"github.com/sogladev/go-manifest-patcher/pkg/prompt"
@@ -96,4 +97,13 @@ func main() {
 
 	println("\n" + strings.Repeat("-", 80))
 	println("All files are up to date or successfully downloaded.")
+
+	// Launch the game client
+	err = prompt.PromptyN("\nLaunch WoW Client? [y/N]: ")
+	if err == prompt.ErrUserCancelled {
+		os.Exit(0) // Exit gracefully if user cancelled
+	}
+
+	println("")
+	launch.LaunchGameClient()
 }
