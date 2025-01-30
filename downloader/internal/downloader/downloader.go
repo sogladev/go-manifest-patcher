@@ -147,8 +147,13 @@ func ProcessManifest(m *manifest.Manifest, f *filter.Filter) error {
 			humanize.Bytes(uint64(totalDownloadSize)),
 			humanize.Bytes(uint64(totalDownloadSize)))
 
-		fmt.Printf("After this operation, %s of additional disk space will be used.\n",
-			humanize.Bytes(uint64(totalDiskChange)))
+		if totalDiskChange > 0 {
+			fmt.Printf("After this operation, %s of additional disk space will be used.\n",
+				humanize.Bytes(uint64(totalDiskChange)))
+		} else {
+			fmt.Printf("After this operation, %s of disk space will be freed.\n",
+				humanize.Bytes(uint64(-totalDiskChange)))
+		}
 
 		err = prompt.PromptyN("Is this ok [y/N]: ")
 		if err != nil {
