@@ -1,4 +1,3 @@
-// filepath: /home/jelle/wd/wow/golang-terminal-downloader/downloader/internal/logger/logger.go
 package logger
 
 import (

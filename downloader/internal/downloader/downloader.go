@@ -36,7 +36,6 @@ func findOperationIndex(operations []FileOperation, path string) int {
 }
 
 func ProcessManifest(m *manifest.Manifest, f *filter.Filter) error {
-
 	// Track files in the local folder for "extra files" detection
 	localFiles := map[string]bool{}
 	err := filepath.WalkDir(".", func(path string, d fs.DirEntry, err error) error {
