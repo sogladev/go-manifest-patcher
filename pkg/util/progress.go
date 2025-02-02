@@ -15,7 +15,7 @@ const (
 )
 
 var (
-	completedFiles = make(map[int]bool)
+	completedFiles = map[int]bool{}
 )
 
 type ProgressInfo struct {

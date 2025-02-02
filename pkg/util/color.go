@@ -21,29 +21,17 @@ func Colorize(text, color string) string {
 
 // Color functions for convenience
 func ColorGreen(text string) string {
-	if runtime.GOOS == "windows" {
-		return text // Return plain text on Windows
-	}
 	return Colorize(text, Green)
 }
 
 func ColorYellow(text string) string {
-	if runtime.GOOS == "windows" {
-		return text // Return plain text on Windows
-	}
 	return Colorize(text, Yellow)
 }
 
 func ColorRed(text string) string {
-	if runtime.GOOS == "windows" {
-		return text // Return plain text on Windows
-	}
 	return Colorize(text, Red)
 }
 
 func ColorCyan(text string) string {
-	if runtime.GOOS == "windows" {
-		return text // Return plain text on Windows
-	}
 	return Colorize(text, Cyan)
 }

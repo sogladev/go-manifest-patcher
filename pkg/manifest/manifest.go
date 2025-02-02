@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -46,7 +47,7 @@ func LoadManifest(source string) (*Manifest, error) {
 
 	// Convert Windows-style paths to cross-platform paths
 	for i := range manifest.Files {
-		manifest.Files[i].Path = strings.ReplaceAll(manifest.Files[i].Path, "\\", "/")
+		manifest.Files[i].Path = filepath.ToSlash(manifest.Files[i].Path)
 	}
 
 	return &manifest, nil
