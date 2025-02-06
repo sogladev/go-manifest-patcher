@@ -9,17 +9,18 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/sogladev/go-manifest-patcher/pkg/prompt"
 	"github.com/sogladev/go-manifest-patcher/pkg/util"
 )
 
 const (
-	repoOwner = "sogladev"
-	repoName  = "go-manifest-patcher"
-	apiURL    = "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/releases"
+	repoOwner             = "sogladev"
+	repoName              = "go-manifest-patcher"
+	apiURL                = "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/releases"
+	executableNameLinux   = "patcher-linux-amd64"
+	executableNameWindows = "patcher-windows-amd64.exe"
 )
 
-type Release struct {
+type releases struct {
 	TagName string `json:"tag_name"`
 	Assets  []struct {
 		Name               string `json:"name"`
@@ -27,20 +28,49 @@ type Release struct {
 	} `json:"assets"`
 }
 
-func CheckForUpdate(currentVersion string) (string, string, error) {
+type LatestRelease struct {
+	Version string
+	url     string
+}
+
+func (r *LatestRelease) Download() error {
+	tempFile := getExecutableName() + ".new"
+	if err := download(r.url, tempFile); err != nil {
+		os.Remove(tempFile) // Clean up temp file
+		return fmt.Errorf("update failed: %w", err)
+	}
+
+	if runtime.GOOS == "windows" {
+		// On Windows we cannot replace the running executable, so inform the user.
+		fmt.Printf("Update downloaded as: %s.\nPlease rename the new executable to %s and restart the application!\n", tempFile, getExecutableName())
+		return nil
+	}
+
+	if err := replaceExecutable(tempFile); err != nil {
+		return fmt.Errorf("failed to replace executable: %w", err)
+	}
+	fmt.Println("Update successful. Please restart the application.")
+	return nil
+}
+
+func Fetch(currentVersion string) (*LatestRelease, error) {
 	resp, err := http.Get(apiURL)
 	if err != nil {
-		return "", "", err
+		return nil, fmt.Errorf("failed to fetch releases: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", "", fmt.Errorf("failed to fetch releases: %s", resp.Status)
+		return nil, fmt.Errorf("failed to fetch releases: %s", resp.Status)
 	}
 
-	var releases []Release
+	var releases []releases
 	if err := json.NewDecoder(resp.Body).Decode(&releases); err != nil {
-		return "", "", err
+		return nil, fmt.Errorf("failed to decode releases: %w", err)
+	}
+
+	if len(releases) == 0 {
+		return nil, fmt.Errorf("no releases found")
 	}
 
 	// Loop through releases and find the best special edition
@@ -61,41 +91,16 @@ func CheckForUpdate(currentVersion string) (string, string, error) {
 
 	// Compare our best with current version
 	if bestVersion != "" && CompareVersions(bestVersion, currentVersion) > 0 {
-		return bestVersion, bestURL, nil
+		return &LatestRelease{
+			Version: bestVersion,
+			url:     bestURL,
+		}, nil
 	}
 
-	return "", "", nil
+	return nil, nil
 }
 
-func UpdateWithProgress(currentVersion string) error {
-	newVersion, downloadURL, err := CheckForUpdate(currentVersion)
-	if err != nil {
-		return err
-	}
-
-	if newVersion == "" {
-		fmt.Println("No updates available. You're running the latest version.")
-		return nil
-	}
-
-	fmt.Printf("\nNew version available: %s -> %s\n", currentVersion, newVersion)
-	err = prompt.PromptyN("Do you want to update? [y/N]: ")
-	if err != nil {
-		return nil // User declined update
-	}
-
-	tempFile := GetExecutableName() + ".new"
-	err = Download(downloadURL, tempFile)
-	if err != nil {
-		os.Remove(tempFile) // Clean up temp file
-		return fmt.Errorf("update failed: %w", err)
-	}
-
-	fmt.Println("Update completed successfully!")
-	return nil
-}
-
-func Download(url, dest string) error {
+func download(url, dest string) error {
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
@@ -153,14 +158,14 @@ func (pw *progressWriter) Write(p []byte) (int, error) {
 	return n, err
 }
 
-func GetExecutableName() string {
+func getExecutableName() string {
 	if runtime.GOOS == "windows" {
-		return "patcher-windows-amd64.exe"
+		return executableNameWindows
 	}
-	return "patcher-linux-amd64"
+	return executableNameLinux
 }
 
-func ReplaceExecutable(newPath string) error {
+func replaceExecutable(newPath string) error {
 	execPath, err := os.Executable()
 	if err != nil {
 		return err

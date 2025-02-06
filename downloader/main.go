@@ -2,23 +2,21 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"runtime"
 	"strings"
 
 	"github.com/common-nighthawk/go-figure"
 
 	"github.com/sogladev/go-manifest-patcher/downloader/internal/config"
-	"github.com/sogladev/go-manifest-patcher/downloader/internal/downloader"
 	"github.com/sogladev/go-manifest-patcher/downloader/internal/filter"
 	"github.com/sogladev/go-manifest-patcher/downloader/internal/logger"
+	"github.com/sogladev/go-manifest-patcher/downloader/internal/transaction"
 	"github.com/sogladev/go-manifest-patcher/downloader/updater"
 	"github.com/sogladev/go-manifest-patcher/pkg/manifest"
 	"github.com/sogladev/go-manifest-patcher/pkg/prompt"
 )
 
-const currentVersion = "v1.0.0"
+const currentVersion = "v1.0.1"
 
 func main() {
 	// Print banner
@@ -36,35 +34,34 @@ func main() {
 	if cfg.SkipUpdate {
 		logger.Debug.Println("Skipping update check as per configuration")
 	} else {
-		newVersion, downloadURL, err := updater.CheckForUpdate(currentVersion)
+		var release *updater.LatestRelease
+		var err error
+		release, err = updater.Fetch(currentVersion)
 		if err != nil {
-			logger.Error.Fatalf("Failed to check for updates: %v", err)
-		}
-		if newVersion != "" {
+			logger.Debug.Printf("Failed to check for updates: %v", err)
+		} else if release == nil {
+			logger.Debug.Println("No new version available")
+		} else {
 			fmt.Printf("Current version : %s\n", currentVersion)
-			fmt.Printf("New version available: %s\n", newVersion)
-			err = prompt.PromptyN("Do you want to update? [y/N]: ")
-			if err == nil {
-				tempFile := "new-" + updater.GetExecutableName()
-				err := updater.Download(downloadURL, tempFile)
-				if err != nil {
-					log.Fatalf("Failed to download update: %v", err)
+			fmt.Printf("New version available: %s\n", release.Version)
+			if err := prompt.PromptyN("Do you want to update? [y/N]: "); err == nil {
+				if err := release.Download(); err != nil {
+					logger.Warning.Printf("Failed to update: %v", err)
 				}
-				if runtime.GOOS == "windows" {
-					// On Windows we cannot replace the running executable, so we need to inform the user
-					fmt.Printf("Update downloaded as: %v.\nPlease rename the new executable to %v and restart the application!\n", tempFile, updater.GetExecutableName())
-				} else {
-					err = updater.ReplaceExecutable(tempFile)
-					if err != nil {
-						log.Fatalf("Failed to replace executable: %v", err)
-					}
-					fmt.Println("Update successful. Please restart the application.")
-				}
-				return
 			}
 		}
 	}
 
+	if err := run(cfg); err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	println("\n" + strings.Repeat("-", 80))
+	println("All files are up to date or successfully downloaded.")
+}
+
+func run(cfg *config.Config) error {
 	// Load manifest from file or URL
 	m, err := manifest.LoadManifest(cfg.ManifestURL)
 	if err != nil {
@@ -84,16 +81,27 @@ func main() {
 		println("\nUsing custom filter config")
 	}
 
-	// Verify files and download missing or outdated files
-	err = downloader.ProcessManifest(m, f)
+	// Load local files
+	localFiles, err := filter.CollectExtraFiles(f)
 	if err != nil {
-		if err == prompt.ErrUserCancelled {
-			return
-		} else {
-			logger.Error.Fatalf("Failed to process manifest: %v", err)
-		}
+		return fmt.Errorf("error reading local files: %v", err)
+	}
+
+	// Create transaction and prompt user
+	transaction := transaction.CreateTransaction(m)
+	if err := transaction.Print(m, localFiles); err != nil {
+		return err
+	}
+	if err := prompt.PromptyN("Is this ok [y/N]: "); err != nil {
+		return err
+	}
+
+	// Verify files and download missing or outdated files
+	if err := transaction.Download(m, localFiles); err != nil {
+		logger.Error.Fatalf("Failed to process manifest: %v", err)
 	}
 
 	println("\n" + strings.Repeat("-", 80))
 	println("All files are up to date or successfully downloaded.")
+	return nil
 }
