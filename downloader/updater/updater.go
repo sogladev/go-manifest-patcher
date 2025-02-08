@@ -21,8 +21,9 @@ const (
 )
 
 type releases struct {
-	TagName string `json:"tag_name"`
-	Assets  []struct {
+	TagName    string `json:"tag_name"`
+	PreRelease bool   `json:"prerelease"`
+	Assets     []struct {
 		Name               string `json:"name"`
 		BrowserDownloadURL string `json:"browser_download_url"`
 	} `json:"assets"`
@@ -49,6 +50,11 @@ func (r *LatestRelease) Download() error {
 	if err := replaceExecutable(tempFile); err != nil {
 		return fmt.Errorf("failed to replace executable: %w", err)
 	}
+
+	if err := setExecutablePermission(); err != nil {
+		return fmt.Errorf("failed to set executable permission: %w", err)
+	}
+
 	fmt.Println("Update successful. Please restart the application.")
 	return nil
 }
@@ -77,6 +83,9 @@ func Fetch(currentVersion string) (*LatestRelease, error) {
 	bestVersion := ""
 	bestURL := ""
 	for _, rel := range releases {
+		if rel.PreRelease {
+			continue // Skip pre-releases
+		}
 		if MatchSpecialEdition(rel.TagName) {
 			if bestVersion == "" || CompareVersions(rel.TagName, bestVersion) > 0 {
 				// Update best version
@@ -177,4 +186,13 @@ func replaceExecutable(newPath string) error {
 	}
 
 	return nil
+}
+
+func setExecutablePermission() error {
+	execPath, err := os.Executable()
+	if err != nil {
+		return err
+	}
+
+	return os.Chmod(execPath, 0755)
 }
